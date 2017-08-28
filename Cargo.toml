@@ -1,0 +1,16 @@
+[package]
+name = "sisyphos-kernel-uefi-x86_64"
+version = "0.1.0"
+authors = ["jzr"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+rlibc = "1.0"
+compiler_builtins = { git = "https://github.com/rust-lang-nursery/compiler-builtins" }
+efi-app = { git = "https://github.com/le-jzr/rust-efi-app" }
+bitflags = "0.9.1"
+x86_64 = "0.1.2"
+spin = "0.4.5"
+
