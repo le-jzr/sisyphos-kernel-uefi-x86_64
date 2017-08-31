@@ -15,7 +15,8 @@ EFI_LDS = src/elf_x86_64_efi.lds
 
 LDFLAGS = -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic $(EFI_CRT_OBJS)
 
-ARNAME = $(build_dir)/libsisyphos_kernel_uefi_x86_64.a
+LIBNAME = sisyphos_kernel_uefi_x86_64
+ARNAME = $(build_dir)/lib$(LIBNAME).a
 SONAME = $(build_dir)/bootx64.so
 EFINAME = $(build_dir)/bootx64.efi
 ISONAME = $(build_dir)/$(CRATE_NAME).iso
@@ -46,9 +47,7 @@ $(EFI_CRT_OBJS): $(EFI_CRT_SOURCE)
 	$(CC) -c -o $@ $<
 
 $(SONAME): $(ARNAME) $(EFI_CRT_OBJS)
-	ar xv $(ARNAME)
-	ld.lld $(LDFLAGS) *.o -o $@
-	rm *.o
+	ld.lld $(LDFLAGS) -L $(build_dir) -l $(LIBNAME) -o $@
 
 %.efi: %.so
 	$(OBJCOPY) -j .text -j .sdata -j .data -j .dynamic -j .dynsym -j .rel \
