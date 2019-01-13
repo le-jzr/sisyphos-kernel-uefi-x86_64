@@ -205,7 +205,7 @@ impl SpanList {
             let mut iter: Option<&mut Span> = self.0.as_mut();
 
             while let Some(span) = iter {
-                assert!(span.is_marked(), "???");
+                assert!(span.is_marked(), "Should never happen.");
                 span.unmark();
                 iter = span.next_mut();
             }

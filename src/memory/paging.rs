@@ -1,6 +1,6 @@
-use core;
-use core::ops::{Index, IndexMut};
-use core::marker::PhantomData;
+use std::fmt;
+use std::ops::{Index, IndexMut};
+use std::marker::PhantomData;
 
 use x86_64::PhysicalAddress;
 use x86_64::registers::control_regs;
@@ -53,8 +53,8 @@ impl Entry {
     }
 }
 
-impl core::fmt::Debug for Entry {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+impl fmt::Debug for Entry {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.flags().contains(PRESENT) {
             f.write_fmt(format_args!("({:x},{:x},{:?})", self.0, self.frame_address().unwrap().0, self.flags()))
         } else {
@@ -100,10 +100,10 @@ pub struct Table<L: TableLevel> {
     level: PhantomData<L>,
 }
 
-impl<L: TableLevel> core::fmt::Debug for Table<L> {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+impl<L: TableLevel> fmt::Debug for Table<L> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         try!(f.write_fmt(format_args!("Table ")));
-        <[Entry] as core::fmt::Debug>::fmt(&self.entries, f)
+        <[Entry] as fmt::Debug>::fmt(&self.entries, f)
     }
 }
 
@@ -156,11 +156,11 @@ impl Table<Level4> {
     }
 
     pub unsafe fn current<'a>() -> &'a Self {
-        unsafe { flat_mapped_ref(control_regs::cr3()) }
+        flat_mapped_ref(control_regs::cr3())
     }
 
     pub unsafe fn current_mut<'a>() -> &'a mut Self {
-        unsafe { flat_mapped_mut(control_regs::cr3()) }
+        flat_mapped_mut(control_regs::cr3())
     }
 }
 

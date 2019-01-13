@@ -1,6 +1,6 @@
-use core::mem;
-use core::ptr::null_mut;
-use core::cmp;
+use std::mem;
+use std::ptr::null_mut;
+use std::cmp;
 
 use alloc::allocator::{Alloc, Layout, AllocErr};
 use memory::paging::FLAT_MEMORY_START;
@@ -153,7 +153,7 @@ impl SpanList {
         self.length = n;
 
         let mut hdr = self.first;
-        for i in 1..n {
+        for _i in 1..n {
             hdr = d!(hdr).next;
         }
 

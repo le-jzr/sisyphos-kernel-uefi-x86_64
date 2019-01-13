@@ -13,7 +13,7 @@ EFI_CRT_SOURCE = src/crt0-efi-x86_64.S
 EFI_CRT_OBJS = $(build_dir)/crt0-efi-x86_64.o
 EFI_LDS = src/elf_x86_64_efi.lds
 
-LDFLAGS = -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic $(EFI_CRT_OBJS)
+LDFLAGS = -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic $(EFI_CRT_OBJS) --no-undefined
 
 LIBNAME = sisyphos_kernel_uefi_x86_64
 ARNAME = $(build_dir)/lib$(LIBNAME).a
@@ -32,12 +32,14 @@ QEMUOPTS = $(KVM) -cpu max -bios $(BIOS) -no-reboot -no-shutdown -d cpu_reset,gu
 OBJCOPY = objcopy
 FORMAT = --target efi-app-x86_64
 
+XARGO_ARGS = --target=$(target)
+
 .PHONY: all cargo run
 
 all: run
 
 cargo:
-	xargo build --target=$(target)
+	xargo build $(XARGO_ARGS)
 
 clean:
 	rm -rf target

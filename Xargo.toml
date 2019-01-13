@@ -1,2 +1,4 @@
-[target.x86_64-sisyphos-uefi.dependencies]
-alloc = {}
+[target.x86_64-sisyphos-uefi.dependencies.std]
+default_features = false
+features = ["dynamic_sys"]
+path = "../rust/src/libstd"

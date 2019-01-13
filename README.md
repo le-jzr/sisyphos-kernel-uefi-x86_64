@@ -1,6 +1,9 @@
 # sisyphos-kernel-uefi-x86_64
 A Rust kernel running on bare UEFI (no separate bootloader). Very early stage.
 
+Now with `std` support! Well, sorta. You need my forks of `rust` and `libc` repositories,
+which include the ability to build without a compiled-in OS backend.
+
 Check the [wiki](https://github.com/le-jzr/sisyphos-kernel-uefi-x86_64/wiki) for some notes about this thing.
 
 Basically, the eventual goal is to build a non-opinionated microkernel that can load regular ELF64 programs as kernel "modules".

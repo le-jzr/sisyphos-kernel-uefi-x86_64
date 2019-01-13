@@ -1,22 +1,21 @@
 #![feature(lang_items)]
-#![no_std]
-#![feature(compiler_builtins_lib)]
 
 #![feature(alloc)]
 #![feature(allocator_api)]
 #![feature(global_allocator)]
-#![feature(raw)]
-#![feature(shared)]
 #![feature(repr_align)]
 #![feature(attr_literals)]
 #![feature(const_fn)]
+#![feature(dynamic_sys)]
 
 // FIXME: remove
 #![allow(unreachable_code)]
+#![allow(dead_code)]
+#![allow(unused_variables)]
 
-
+#[allow(unused_extern_crates)]
 extern crate rlibc;
-extern crate compiler_builtins;
+
 extern crate alloc;
 
 extern crate efi_app;
@@ -28,11 +27,11 @@ extern crate bitflags;
 
 mod relocate;
 mod memory;
-pub mod panic;
-pub mod rt_stubs;
+//pub mod panic;
+//pub mod rt_stubs;
+mod sys;
 
-use alloc::boxed::Box;
-
+pub mod cdefs;
 
 #[global_allocator]
 static ALLOCATOR: memory::heap::HeapAllocator = memory::heap::HeapAllocator::new();
@@ -55,24 +54,25 @@ pub extern "C" fn efi_main(ldbase: u64, dyn: *const u8, arg1: efi_app::Arg1, arg
     // we just print an error message and make it halt and catch fire. Such a
     // thing happening should be highly unlikely.
     unsafe { memory::paging::L4Table::initialize_high_mapping(); }
-    
+
+    sys::init();
+
     // TODO: This change to mapping needs to be reverted if we return without calling ExitBootServices().
     // The remapping we do is currently infringing on UEFI's turf (we don't own the memory map yet,
     // so we shouldn't touch it). It should be fine if we end up calling `ExitBootServices()`, since UEFI itself
     // should only have identity mapping, so the top half should be empty. If we don't ExitBootServices(), though,
     // we have to return things into original state.
-    
-    let b = Box::new(5);
+
     // TODO: Relocate everything into high memory, including current RIP and RSP.
 
-    let o = ctx.console_out();
-    o.clear_screen();
+    ctx.console_out().clear_screen().ok();
 
-    //o.write_fmt(format_args!("{:?}", unsafe { memory::paging::L4Table::current() }));
+    //print!("{:?}", unsafe { memory::paging::L4Table::current() });
 
-    o.output_string("Hello, EFI world!\n");
+    println!("Hello, EFI world!");
 
-    loop{}
+
+    panic!("Cannot return from main until we fix mapping.");
     //return efi_app::Status::success();
 }
 

@@ -1,6 +1,6 @@
 
 use efi_app;
-use core::ptr;
+use std::ptr;
 
 #[repr(C)]
 pub struct Elf64_Dyn {
